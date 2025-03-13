@@ -1,5 +1,11 @@
 version: '3'
 
+networks:
+  kuberneteslab:
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.92.0/24"
 
 services:
     jumpbox:
@@ -7,18 +13,22 @@ services:
         context: .
         dockerfile: Dockerfile
       container_name: jumpbox
-      ports:
-        - "8443:8443"
-        - "22:22"
-      #network_mode: kuberneteslab
+      networks:
+      - kuberneteslab
+#      ports:
+#        - "8443:8443"
+#        - "22:22"
+      
       command: sleep infinity
 
     server:
       build: 
         context: ./server
       container_name: server
-      ports:
-        - "8443:8443"
+      networks:
+        - kuberneteslab
+#      ports:
+#        - "8443:8443"
       command: sleep infinity
       #links: 
       #  - node-0
@@ -32,7 +42,7 @@ services:
         - KUBELET_OPTS=--network-plugin=cni --pod-infra-container-image=k8s.gcr.io/pause:3.2.0
       networks:
         - kuberneteslab
-      restart: unless-stopped
+      command: sleep infinity
 
     node-1:
       build: 
@@ -42,10 +52,9 @@ services:
         - KUBELET_OPTS=--network-plugin=cni --pod-infra-container-image=k8s.gcr.io/pause:3.2.0
       networks:
         - kuberneteslab
-      restart: unless-stopped
+      command: sleep infinity
 
 
 
-networks:
-  kuberneteslab:
+
 
