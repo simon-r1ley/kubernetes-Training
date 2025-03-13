@@ -1,5 +1,6 @@
 version: '3'
 
+
 services:
     jumpbox:
       build: 
@@ -18,14 +19,10 @@ services:
       container_name: server
       ports:
         - "8443:8443"
-      networks:
-        - kuberneteslab
-      environment:
-        - KUBELET_OPTS=--network-plugin=cni --pod-infra-container-image=k8s.gcr.io/pause:3.2.0
-      restart: unless-stopped
-      links: 
-        - node-0
-        - node-1
+      command: sleep infinity
+      #links: 
+      #  - node-0
+      #  - node-1
 
     node-0:
       build: 
